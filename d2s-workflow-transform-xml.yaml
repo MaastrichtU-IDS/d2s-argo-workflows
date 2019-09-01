@@ -143,9 +143,9 @@ spec:
     "-un", "{{workflow.parameters.sparqlUsername}}", 
     "-pw", "test",
     #"-pw", "$SPARQLPASSWORD",  # TODO: secret not working
-    "--var-inputGraph", "{{inputs.parameters.sparqlInputGraph}}",
-    "--var-outputGraph", "{{inputs.parameters.sparqlOutputGraph}}", 
-    "--var-serviceUrl", "{{inputs.parameters.sparqlServiceUrl}}", ]
+    "--var-input", "{{inputs.parameters.sparqlInputGraph}}",
+    "--var-output", "{{inputs.parameters.sparqlOutputGraph}}", 
+    "--var-service", "{{inputs.parameters.sparqlServiceUrl}}", ]
       env:
       - name: SPARQLPASSWORD
         valueFrom:
