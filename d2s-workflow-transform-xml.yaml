@@ -31,6 +31,8 @@ spec:
       value: test
     - name: sparqlUsername
       value: import_user
+    - name: sparqlUsername
+      value: test
     - name: sparqlQueryMetadata
       value: null
     - name: sparqlQueryTransform
@@ -91,14 +93,14 @@ spec:
     container:
       image: vemonet/data2services-download:latest
       args: [ "--download-datasets", "{{workflow.parameters.datasetToProcess}}", 
-      "--username", "{{workflow.parameters.downloadUsername}}", 
-      "--password", "$DOWNLOADPASSWORD" ] # TODO: this should not be a env var
-      env:
-      - name: DOWNLOADPASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: d2s-download-password
-            key: password
+      "--username", "{{workflow.parameters.downloadUsername}}"] 
+      #"--password", "$DOWNLOADPASSWORD" ] # TODO: this should not be a env var
+      # env:
+      # - name: DOWNLOADPASSWORD
+      #   valueFrom:
+      #     secretKeyRef:
+      #       name: d2s-download-password
+      #       key: password
       volumeMounts:
       - name: workdir
         mountPath: /data
@@ -117,7 +119,7 @@ spec:
       args: ["-url", "{{workflow.parameters.sparqlEndpoint}}", 
       "-rep", "{{workflow.parameters.sparqlRepository}}", 
       "-if", "/data/rdf_output.nq", 
-      "-un", "{{workflow.parameters.sparqlUsername}}", "-pw", "test"]
+      "-un", "{{workflow.parameters.sparqlUsername}}", "-pw", "{{workflow.parameters.sparqlPassword}}"]
       #"-un", "{{workflow.parameters.sparqlUsername}}", "-pw", "$SPARQLPASSWORD"]  # TODO: secret not working
       env:
       - name: SPARQLPASSWORD
@@ -141,14 +143,14 @@ spec:
       args: ["-ep", "{{workflow.parameters.sparqlEndpoint}}", "-rep", "{{workflow.parameters.sparqlRepository}}", 
     "-op", "update", "-f", "{{inputs.parameters.sparqlQueriesPath}}",
     "-un", "{{workflow.parameters.sparqlUsername}}", 
-    #"-pw", "test",
-    "-pw", "$SPARQLPASSWORD",  # TODO: secret not working
+    "-pw", "{{workflow.parameters.sparqlPassword}}",
+    # "-pw", "$SPARQLPASSWORD",  # TODO: secret not working
     "--var-input", "{{inputs.parameters.sparqlInputGraph}}",
     "--var-output", "{{inputs.parameters.sparqlOutputGraph}}", 
     "--var-service", "{{inputs.parameters.sparqlServiceUrl}}", ]
-      env:
-      - name: SPARQLPASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: d2s-sparql-password
-            key: password
+      # env:
+      # - name: SPARQLPASSWORD
+      #   valueFrom:
+      #     secretKeyRef:
+      #       name: d2s-sparql-password
+      #       key: password

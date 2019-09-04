@@ -9,6 +9,7 @@ sparqlEndpoint: http://node000002.cluster.ids.unimaas.nl/
 #sparqlEndpoint: http://graphdb.dumontierlab.com/
 sparqlRepository: test
 sparqlUsername: import_user
+sparqlPassword: test
 
 # SPARQL queries params
 sparqlQueryMetadata: https://github.com/MaastrichtU-IDS/data2services-transform-biolink/tree/master/mapping/pubmed/metadata/1
