@@ -15,4 +15,4 @@ sparqlQueryMetadata: https://github.com/MaastrichtU-IDS/data2services-transform-
 sparqlQueryTransform: https://github.com/MaastrichtU-IDS/data2services-transform-biolink/tree/master/mapping/drugbank/transform/1
 
 sparqlBiolinkGraphUri: https://w3id.org/data2services/graph/biolink/drugbank-sample
-sparqlGenericRdfServiceUrl: http://localhost:7200/repositories/test
+sparqlGenericRdfServiceUrl: repository:test

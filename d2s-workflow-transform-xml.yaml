@@ -32,13 +32,13 @@ spec:
     - name: sparqlUsername
       value: import_user
     - name: sparqlQueryMetadata
-      value: https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/drugbank/5.0
+      value: null
     - name: sparqlQueryTransform
-      value: https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/insert-biolink/drugbank
+      value: null
     - name: sparqlBiolinkGraphUri
       value: https://w3id.org/data2services/graph/biolink
     - name: sparqlGenericRdfServiceUrl
-      value: http://localhost:7200/repositories/test
+      value: repository:test
 
   templates:
   - name: execute-workflow
@@ -106,7 +106,7 @@ spec:
   - name: xml2rdf
     container:
       image: vemonet/xml2rdf:latest
-      args: [ "-i", "/data/{{workflow.parameters.datasetToProcess}}/*.xml", "-o", "/data/rdf_output.nq", "-g", "{{workflow.parameters.tmpGraphUri}}" ]
+      args: [ "-i", "/data/{{workflow.parameters.datasetToProcess}}/*.xml*", "-o", "/data/rdf_output.nq", "-g", "{{workflow.parameters.tmpGraphUri}}" ]
       volumeMounts:
       - name: workdir
         mountPath: /data
