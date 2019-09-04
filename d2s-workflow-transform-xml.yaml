@@ -20,7 +20,7 @@ spec:
   arguments:
     parameters:
     - name: datasetToProcess
-      value: drugbank
+      value: null
     - name: downloadUsername
       value: my_download_username
     - name: tmpGraphUri
@@ -141,8 +141,8 @@ spec:
       args: ["-ep", "{{workflow.parameters.sparqlEndpoint}}", "-rep", "{{workflow.parameters.sparqlRepository}}", 
     "-op", "update", "-f", "{{inputs.parameters.sparqlQueriesPath}}",
     "-un", "{{workflow.parameters.sparqlUsername}}", 
-    "-pw", "test",
-    #"-pw", "$SPARQLPASSWORD",  # TODO: secret not working
+    #"-pw", "test",
+    "-pw", "$SPARQLPASSWORD",  # TODO: secret not working
     "--var-input", "{{inputs.parameters.sparqlInputGraph}}",
     "--var-output", "{{inputs.parameters.sparqlOutputGraph}}", 
     "--var-service", "{{inputs.parameters.sparqlServiceUrl}}", ]

@@ -27,7 +27,7 @@ Get the command with the token from the `Copy Login Command` button in the user 
 
 ---
 
-## Argo
+## Install Argo
 
 Install [Argo client](https://github.com/argoproj/argo/blob/master/demo.md#1-download-argo)
 
@@ -40,6 +40,7 @@ argo submit --watch d2s-sparql-workflow.yaml
 
 # Define params in a separate YAML file (no _ in params name)
 argo submit d2s-workflow-transform-xml.yaml -f workflow-params-drugbank.yml
+argo submit d2s-workflow-transform-xml.yaml -f workflow-params-pubmed.yml
 ```
 
 ### Check running workflows
@@ -64,4 +65,38 @@ oc get pod
 oc create -f examples/hello-openshift/hello-pod.json
 ```
 
+---
+
+## Workflow administration
+
+### Create secret
+
+* Access [OpenShift](https://app.dsri.unimaas.nl:8443/) > `Argo` project > `Resources` > `Secret`
+* `Secret Type`: Generic Secret
+* `Secret Name`: d2s-sparql-password
+* `Key`: password
+* Enter the password in the text box `Clean Value`
+
+Now in the workflow definition you can use the secret as environment variable
+
+```yaml
+- name: d2s-sparql-operations
+    inputs:
+      parameters:
+      - name: sparqlQueriesPath
+      - name: sparqlInputGraph
+      - name: sparqlOutputGraph
+      - name: sparqlServiceUrl
+    container:
+      image: vemonet/data2services-sparql-operations:latest
+      args: ["-ep", "{{workflow.parameters.sparqlEndpoint}}",
+    "-un", "{{workflow.parameters.sparqlUsername}}", 
+    "-pw", "$SPARQLPASSWORD",  # Secret here]
+      env:
+      - name: SPARQLPASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: d2s-sparql-password
+            key: password
+```
 
