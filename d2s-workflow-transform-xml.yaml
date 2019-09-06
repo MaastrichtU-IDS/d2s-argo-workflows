@@ -5,17 +5,23 @@ metadata:
 spec:
   entrypoint: execute-workflow
 
-  volumeClaimTemplates:                 # define volume, same syntax as k8s Pod spec
-  - metadata:
-      name: workdir                     # name of volume claim
-      annotations:
-        volume.beta.kubernetes.io/storage-class: maprfs-ephemeral
-        volume.beta.kubernetes.io/storage-provisioner: mapr.com/maprfs
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 100Gi                  # Gi => 1024 * 1024 * 1024
+  # volumeClaimTemplates:                 # define volume, same syntax as k8s Pod spec
+  # - metadata:
+  #     name: workdir                     # name of volume claim
+  #     annotations:
+  #       volume.beta.kubernetes.io/storage-class: maprfs-ephemeral
+  #       volume.beta.kubernetes.io/storage-provisioner: mapr.com/maprfs
+  #   spec:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     resources:
+  #       requests:
+  #         storage: 100Gi                  # Gi => 1024 * 1024 * 1024
+  
+  # Existing volume
+  volumes:
+  - name: workdir
+    persistentVolumeClaim:
+      claimName: data2services-storage
 
   arguments:
     parameters:
@@ -94,7 +100,7 @@ spec:
       image: vemonet/data2services-download:latest
       args: [ "--download-datasets", "{{workflow.parameters.datasetToProcess}}", 
       "--username", "{{workflow.parameters.downloadUsername}}"] 
-      #"--password", "$DOWNLOADPASSWORD" ] # TODO: this should not be a env var
+      #"--password", "$DOWNLOADPASSWORD" ] # TODO: secret not working
       # env:
       # - name: DOWNLOADPASSWORD
       #   valueFrom:

@@ -49,6 +49,43 @@ argo submit d2s-workflow-transform-xml.yaml -f workflow-params-pubmed.yml
 argo list
 ```
 
+## Debug Argo
+
+To get into the container. Create YAML with command `tail /dev/null` to keep it running
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    purpose: download-data-files
+  name: d2s-download-pod
+  namespace: argo
+spec:
+  volumes:
+  - name: workdir
+    persistentVolumeClaim:
+      claimName: data2services-storage
+  containers:
+  - name: d2s-download
+    image: vemonet/data2services-download:latest
+    command: [ "tail", "-f", "/dev/null"]
+    volumeMounts:
+    - name: workdir
+      mountPath: /data
+```
+
+Then start the pod
+
+```shell
+oc create -f archives/d2s-download-pod.yaml
+
+# Connect with Shell
+oc rsh d2s-download-pod
+```
+
+
+
 ---
 
 ## oc commands
@@ -68,6 +105,45 @@ oc create -f examples/hello-openshift/hello-pod.json
 ---
 
 ## Workflow administration
+
+### Create persistent volume
+
+https://app.dsri.unimaas.nl:8443/console/project/argo/create-pvc
+
+* Storage class > `maprfs-ephemeral`
+* Shared Acces (RWX)
+
+### Mount filesystem
+
+Deploy a [filebrowser](https://hub.docker.com/r/filebrowser/filebrowser) on MapR to access volumes
+
+Go to https://app.dsri.unimaas.nl:8443/console/catalog > click `Deploy image`
+
+* Add to Project: `argo`
+* Image Name: `filebrowser/filebrowser` 
+* Give a name to your image: `filebrowser`
+* Click `Deploy`
+* Go to `argo` project > Click on latest deployment of the `filebrowser`
+* Delete the automatically mounted volume, and add the persistent volume (`data2services-storage`). Should be on `/srv`
+* Add route
+
+* Access on http://d2s-filebrowser-argo.app.dsri.unimaas.nl/files/
+
+### Create temporary volume in the workflow
+
+```yaml
+volumeClaimTemplates:                 # define volume, same syntax as k8s Pod spec
+  - metadata:
+      name: workdir                     # name of volume claim
+      annotations:
+        volume.beta.kubernetes.io/storage-class: maprfs-ephemeral
+        volume.beta.kubernetes.io/storage-provisioner: mapr.com/maprfs
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 100Gi 
+```
 
 ### Create secret
 
