@@ -98,7 +98,7 @@ spec:
   - name: d2s-download
     container:
       image: vemonet/data2services-download:latest
-      args: [ "--download-datasets", "{{workflow.parameters.datasetToProcess}}", 
+      args: [ "--download-datasets", "{{workflow.parameters.datasetToProcess}}", "--working-path", "/data/{{workflow.parameters.datasetToProcess}}/input",
       "--username", "{{workflow.parameters.downloadUsername}}"] 
       #"--password", "$DOWNLOADPASSWORD" ] # TODO: secret not working
       # env:
@@ -114,7 +114,8 @@ spec:
   - name: xml2rdf
     container:
       image: vemonet/xml2rdf:latest
-      args: [ "-i", "/data/{{workflow.parameters.datasetToProcess}}/*.xml*", "-o", "/data/rdf_output.nq", "-g", "{{workflow.parameters.tmpGraphUri}}" ]
+      args: [ "-i", "/data/{{workflow.parameters.datasetToProcess}}/input/{{workflow.parameters.datasetToProcess}}/*.xml*", 
+        "-o", "/data/{{workflow.parameters.datasetToProcess}}/output/rdf_output.nq", "-g", "{{workflow.parameters.tmpGraphUri}}" ]
       volumeMounts:
       - name: workdir
         mountPath: /data
@@ -124,7 +125,7 @@ spec:
       image: vemonet/rdf-upload:latest
       args: ["-url", "{{workflow.parameters.sparqlEndpoint}}", 
       "-rep", "{{workflow.parameters.sparqlRepository}}", 
-      "-if", "/data/rdf_output.nq", 
+      "-if", "/data/{{workflow.parameters.datasetToProcess}}/output/rdf_output.nq", 
       "-un", "{{workflow.parameters.sparqlUsername}}", "-pw", "{{workflow.parameters.sparqlPassword}}"]
       #"-un", "{{workflow.parameters.sparqlUsername}}", "-pw", "$SPARQLPASSWORD"]  # TODO: secret not working
       env:
