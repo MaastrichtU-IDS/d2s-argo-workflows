@@ -5,7 +5,7 @@ metadata:
 spec:
   entrypoint: execute-workflow
 
-  # Existing volume
+  # Use existing volume
   volumes:
   - name: workdir
     persistentVolumeClaim:

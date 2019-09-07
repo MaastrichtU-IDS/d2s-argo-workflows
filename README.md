@@ -1,10 +1,11 @@
 # Run workflows with [Argo](https://github.com/argoproj/argo/)
 
 * Access Maastricht University [DSRI OpenShift platform](https://app.dsri.unimaas.nl:8443/).
-
 * Access its [Argo UI](http://argo-ui-argo.app.dsri.unimaas.nl/workflows).
 
-## Install [oc client](https://www.okd.io/download.html)
+## Requirements
+
+### Install [oc client](https://www.okd.io/download.html)
 
 ```shell
 wget https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz
@@ -14,24 +15,25 @@ cd openshift-origin-client*/
 sudo mv oc kubectl /usr/local/bin/
 ```
 
+### Install [Argo](https://argoproj.github.io/argo/)
+
+Install [Argo client](https://github.com/argoproj/argo/blob/master/demo.md#1-download-argo)
+
 ---
+
+## Run workflows
 
 ## oc login
 
-Login to the cluster using the OpenShift client
+[Login to the cluster](https://app.dsri.unimaas.nl:8443/) using the OpenShift client
+
 ```shell
 oc login https://openshift_cluster:8443 --token=MY_TOKEN
 ```
 
-Get the command with the token from the `Copy Login Command` button in the user details at the top right of the OpenShift webpage.
+* Get the command with the token from the `Copy Login Command` button in the user details at the top right of the [OpenShift webpage](https://app.dsri.unimaas.nl:8443/).
 
----
-
-## Install Argo
-
-Install [Argo client](https://github.com/argoproj/argo/blob/master/demo.md#1-download-argo)
-
-### Run workflows
+### Run [examples](https://github.com/MaastrichtU-IDS/data2services-transform-biolink)
 
 As example we will use config files from [data2services-transform-biolink](https://github.com/MaastrichtU-IDS/data2services-transform-biolink)
 
@@ -40,7 +42,7 @@ git clone --recursive https://github.com/MaastrichtU-IDS/data2services-transform
 cd data2services-transform-biolink
 ```
 
-Run `oc login` to connect to the OpenShift cluster
+Run `oc login` to connect to the [OpenShift cluster](https://app.dsri.unimaas.nl:8443/).
 
 ```shell
 # steps based workflow
@@ -61,9 +63,13 @@ argo submit --watch d2s-sparql-workflow.yaml
 argo list
 ```
 
+---
+
 ## Debug Argo
 
-To get into the container. Create YAML with command `tail /dev/null` to keep it running
+To get into the container. Create YAML with command `tail /dev/null` to keep it running.
+
+Example with [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download):
 
 ```yaml
 apiVersion: v1
@@ -95,8 +101,6 @@ oc create -f archives/d2s-download-pod.yaml
 # Connect with Shell
 oc rsh d2s-download-pod
 ```
-
-
 
 ---
 
@@ -169,22 +173,31 @@ Now in the workflow definition you can use the secret as environment variable
 
 ```yaml
 - name: d2s-sparql-operations
-    inputs:
-      parameters:
-      - name: sparqlQueriesPath
-      - name: sparqlInputGraph
-      - name: sparqlOutputGraph
-      - name: sparqlServiceUrl
-    container:
-      image: vemonet/data2services-sparql-operations:latest
-      args: ["-ep", "{{workflow.parameters.sparqlEndpoint}}",
-    "-un", "{{workflow.parameters.sparqlUsername}}", 
-    "-pw", "$SPARQLPASSWORD",  # Secret here]
-      env:
-      - name: SPARQLPASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: d2s-sparql-password
-            key: password
+  inputs:
+    parameters:
+    - name: sparql-queries-path
+    - name: sparql-input-graph
+    - name: sparql-output-graph
+    - name: sparql-service-url
+    - name: sparql-triplestore-url
+    - name: sparql-triplestore-repository
+    - name: sparql-triplestore-username
+  container:
+    image: vemonet/data2services-sparql-operations:latest
+    args: ["-ep", "{{inputs.parameters.sparql-triplestore-url}}", 
+      "-rep", "{{inputs.parameters.sparql-triplestore-repository}}", 
+      "-op", "update", "-f", "{{inputs.parameters.sparql-queries-path}}",
+      "-un", "{{inputs.parameters.sparql-triplestore-username}}", 
+      "-pw", "{{inputs.parameters.sparql-triplestore-password}}",
+      "-pw", "$SPARQLPASSWORD",  # secret from env
+      "--var-input", "{{inputs.parameters.sparql-input-graph}}",
+      "--var-output", "{{inputs.parameters.sparql-output-graph}}", 
+      "--var-service", "{{inputs.parameters.sparql-service-url}}", ]
+    env:
+    - name: SPARQLPASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: d2s-sparql-password
+          key: password
 ```
 

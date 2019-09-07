@@ -5,19 +5,7 @@ metadata:
 spec:
   entrypoint: execute-workflow
 
-  # volumeClaimTemplates:                 # define volume, same syntax as k8s Pod spec
-  # - metadata:
-  #     name: workdir                     # name of volume claim
-  #     annotations:
-  #       volume.beta.kubernetes.io/storage-class: maprfs-ephemeral
-  #       volume.beta.kubernetes.io/storage-provisioner: mapr.com/maprfs
-  #   spec:
-  #     accessModes: [ "ReadWriteOnce" ]
-  #     resources:
-  #       requests:
-  #         storage: 100Gi                  # Gi => 1024 * 1024 * 1024
-  
-  # Existing volume
+  # Use existing volume
   volumes:
   - name: workdir
     persistentVolumeClaim:
@@ -132,13 +120,6 @@ spec:
       image: vemonet/data2services-download:latest
       args: [ "--download-datasets", "{{workflow.parameters.dataset}}", "--working-path", "/data/{{workflow.parameters.dataset}}/input",
       "--username", "{{workflow.parameters.download-username}}"] 
-      #"--password", "$DOWNLOADPASSWORD" ] # TODO: secret not working
-      # env:
-      # - name: DOWNLOADPASSWORD
-      #   valueFrom:
-      #     secretKeyRef:
-      #       name: d2s-download-password
-      #       key: password
       volumeMounts:
       - name: workdir
         mountPath: /data
@@ -159,13 +140,6 @@ spec:
       "-rep", "{{workflow.parameters.sparql-tmp-triplestore-repository}}", 
       "-if", "/data/{{workflow.parameters.dataset}}/output/rdf_output.nq", 
       "-un", "{{workflow.parameters.sparql-tmp-triplestore-username}}", "-pw", "{{workflow.parameters.sparql-tmp-triplestore-password}}"]
-      #"-un", "{{workflow.parameters.sparql-tmp-triplestore-username}}", "-pw", "$SPARQLPASSWORD"]  # TODO: secret not working
-      # env:
-      # - name: SPARQLPASSWORD
-      #   valueFrom:
-      #     secretKeyRef:
-      #       name: d2s-sparql-password
-      #       key: password
       volumeMounts:
       - name: workdir
         mountPath: /data
@@ -188,14 +162,6 @@ spec:
         "-op", "update", "-f", "{{inputs.parameters.sparql-queries-path}}",
         "-un", "{{inputs.parameters.sparql-triplestore-username}}", 
         "-pw", "{{inputs.parameters.sparql-triplestore-password}}",
-        # "-pw", "$SPARQLPASSWORD",  # TODO: secret not working
         "--var-input", "{{inputs.parameters.sparql-input-graph}}",
         "--var-output", "{{inputs.parameters.sparql-output-graph}}", 
         "--var-service", "{{inputs.parameters.sparql-service-url}}", ]
-
-        # env:
-        # - name: SPARQLPASSWORD
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: d2s-sparql-password
-        #       key: password
