@@ -51,7 +51,7 @@ spec:
   templates:
   - name: execute-workflow
     steps:
-    - - name: run-download
+    - - name: download-files
         template: d2s-download
     - - name: run-xml2rdf
         template: xml2rdf

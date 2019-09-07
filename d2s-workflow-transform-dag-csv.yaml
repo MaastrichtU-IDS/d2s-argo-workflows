@@ -13,7 +13,7 @@ spec:
   arguments:
     parameters:
     - name: datasetToProcess
-      value: stitch
+      value: stitch             # 07:39 min when download files
     - name: downloadUsername
       value: my_download_username
     - name: graphUri
@@ -28,17 +28,19 @@ spec:
 
   templates:
   - name: execute-workflow
-    steps:
-    - - name: download-files
+    dag:
+      tasks:
+      - name: download-files
         template: d2s-download
-    - - name: drill
+      - name: drill
         template: apache-drill
-    - - name: run-autor2rml
+      - name: run-autor2rml
         template: autor2rml
+        dependencies: [drill, download-files]
         arguments:
           parameters:
           - name: jdbcUrl
-            value: "jdbc:drill:drillbit={{steps.drill.ip}}:31010"
+            value: "jdbc:drill:drillbit={{tasks.drill.ip}}:31010"
 
 
   - name: d2s-download
@@ -57,12 +59,17 @@ spec:
       volumeMounts:
         - name: workdir
           mountPath: /data # readonly?
-      readinessProbe:  # wait for readinessProbe to succeed
-        httpGet:
-          path: /
+      # readinessProbe:  # wait for readinessProbe to succeed
+      #   httpGet:
+      #     path: /
+      #     port: 8047
+      #   initialDelaySeconds: 5
+        #timeoutSeconds: 1
+      livenessProbe:
+        tcpSocket:
           port: 8047
         initialDelaySeconds: 5
-        #timeoutSeconds: 1
+        timeoutSeconds: 1
 
   - name: autor2rml
     inputs:
