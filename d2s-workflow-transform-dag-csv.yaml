@@ -13,7 +13,7 @@ spec:
   arguments:
     parameters:
     - name: dataset
-      value: stitch             # 07:39 min when download files
+      value: null
     - name: download_username
       value: my_download_username
     - name: sparql_tmp_graph_uri
@@ -26,14 +26,22 @@ spec:
       value: import_user
     - name: sparql_tmp_triplestore_password
       value: null
-    - name: sparql_insert_metadata_path
-      value: null
-    - name: sparql_transform_queries_path
+    - name: sparql_final_triplestore_url
+      value: http://node000002.cluster.ids.unimaas.nl/
+    - name: sparql_final_triplestore_repository
+      value: test
+    - name: sparql_final_triplestore_username
+      value: import_user
+    - name: sparql_final_triplestore_password
       value: null
     - name: sparql_final_graph_uri
       value: https://w3id.org/data2services/graph/biolink
     - name: sparql_tmp_service_url
       value: repository:test
+    - name: sparql_insert_metadata_path
+      value: null
+    - name: sparql_transform_queries_path
+      value: null
 
 
   templates:
@@ -49,7 +57,7 @@ spec:
         dependencies: [drill, download-files]
         arguments:
           parameters:
-          - name: jdbcUrl
+          - name: input_data_jdbc
             value: "jdbc:drill:drillbit={{tasks.drill.ip}}:31010"
 
 
@@ -84,10 +92,10 @@ spec:
   - name: autor2rml
     inputs:
       parameters:
-      - name: jdbcUrl
+      - name: input_data_jdbc
     container:
       image: vemonet/autor2rml:latest
-      args: ["-j", "{{inputs.parameters.jdbcUrl}}", 
+      args: ["-j", "{{inputs.parameters.input_data_jdbc}}", 
       "-o", "/data/{{workflow.parameters.dataset}}/output/mapping.trig", "-d", "/data/{{workflow.parameters.dataset}}/input",
       "-b", "https://w3id.org/data2services/", "-g", "{{workflow.parameters.sparql_tmp_graph_uri}}"]
       volumeMounts:
