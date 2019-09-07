@@ -16,7 +16,7 @@ spec:
       value: stitch
     - name: downloadUsername
       value: my_download_username
-    - name: graphUri
+    - name: tmpGraphUri
       value: https://w3id.org/data2services/graph/autor2rml
     - name: sparqlEndpoint
       value: http://node000002.cluster.ids.unimaas.nl/
@@ -24,6 +24,16 @@ spec:
       value: test
     - name: sparqlUsername
       value: import_user
+    - name: sparqlPassword
+      value: null
+    - name: sparqlQueryMetadata
+      value: null
+    - name: sparqlQueryTransform
+      value: null
+    - name: sparqlBiolinkGraphUri
+      value: https://w3id.org/data2services/graph/biolink
+    - name: sparqlGenericRdfServiceUrl
+      value: repository:test
 
 
   templates:
@@ -72,7 +82,7 @@ spec:
       image: vemonet/autor2rml:latest
       args: ["-j", "{{inputs.parameters.jdbcUrl}}", 
       "-o", "/data/{{workflow.parameters.datasetToProcess}}/output/mapping.trig", "-d", "/data/{{workflow.parameters.datasetToProcess}}/input",
-      "-b", "https://w3id.org/data2services/", "-g", "{{workflow.parameters.graphUri}}"]
+      "-b", "https://w3id.org/data2services/", "-g", "{{workflow.parameters.tmpGraphUri}}"]
       volumeMounts:
       - name: workdir
         mountPath: /data
