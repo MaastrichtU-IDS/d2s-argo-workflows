@@ -33,14 +33,26 @@ Install [Argo client](https://github.com/argoproj/argo/blob/master/demo.md#1-dow
 
 ### Run workflows
 
-`oc login` required
+As example we will use config files from [data2services-transform-biolink](https://github.com/MaastrichtU-IDS/data2services-transform-biolink)
 
 ```shell
-argo submit --watch d2s-sparql-workflow.yaml
+git clone --recursive https://github.com/MaastrichtU-IDS/data2services-transform-biolink.git
+cd data2services-transform-biolink
+```
 
-# Define params in a separate YAML file (no _ in params name)
-argo submit d2s-workflow-transform-xml.yaml -f workflow-params-drugbank.yml
-argo submit d2s-workflow-transform-xml.yaml -f workflow-params-pubmed.yml
+Run `oc login` to connect to the OpenShift cluster
+
+```shell
+# steps based workflow
+argo submit data2services-argo-workflows/d2s-workflow-transform-xml.yaml \
+  -f support/config/config-transform-xml-drugbank.yml
+
+# DAG workflow
+argo submit data2services-argo-workflows/d2s-workflow-transform-xml-dag.yaml \
+  -f support/config/config-transform-xml-drugbank.yml
+
+# Test
+argo submit --watch d2s-sparql-workflow.yaml
 ```
 
 ### Check running workflows
