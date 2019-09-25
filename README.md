@@ -1,5 +1,7 @@
 # Run workflows with [Argo](https://github.com/argoproj/argo/)
 
+See [d2s.semanticscience.org](http://d2s.semanticscience.org/docs/argo-install) for detailed documentation.
+
 * Access Maastricht University [DSRI OpenShift platform](https://app.dsri.unimaas.nl:8443/).
 * Access its [Argo UI](http://argo-ui-argo.app.dsri.unimaas.nl/workflows).
 
