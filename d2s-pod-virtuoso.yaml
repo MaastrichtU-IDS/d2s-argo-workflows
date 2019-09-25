@@ -6,7 +6,7 @@ metadata:
   labels:
     purpose: d2s-services
     service: virtuoso
-  name: d2s-pod-virtuoso
+  name: d2s-pod-virtuoso2
   namespace: argo
 spec:
   volumes:
@@ -20,9 +20,7 @@ spec:
     ports:
       - containerPort: 8890
         protocol: TCP
-      - containerPort: 1111
-        protocol: TCP
-    # args: ["8890"]
+    # args: ["1111"]
     env:
       - name: DBA_PASSWORD
         value: dba
