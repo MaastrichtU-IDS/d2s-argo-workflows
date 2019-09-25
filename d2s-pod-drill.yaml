@@ -1,8 +1,11 @@
 apiVersion: v1
 kind: Pod
+# https://docs.openshift.com/enterprise/3.0/architecture/core_concepts/pods_and_services.html
+
 metadata:
   labels:
-    purpose: d2s-running-services
+    purpose: d2s-services
+    service: drill
   name: d2s-pod-drill
   namespace: argo
 spec:
@@ -13,6 +16,7 @@ spec:
   containers:
   - name: d2s-drill
     image: vemonet/apache-drill:latest
+    restartPolicy: OnFailure
     #command: [ "tail", "-f", "/dev/null"]
     volumeMounts:
     - name: workdir
