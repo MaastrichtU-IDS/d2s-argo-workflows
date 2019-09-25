@@ -104,7 +104,7 @@ spec:
         arguments:
           parameters:
           - name: sparql-queries-path
-            value: https://github.com/MaastrichtU-IDS/data2services-transform-repository/tree/master/sparql/compute-hcls-stats
+            value: https://github.com/MaastrichtU-IDS/d2s-transform-repository/tree/master/sparql/compute-hcls-stats
           - name: sparql-input-graph
             value: "{{workflow.parameters.sparql-final-graph-uri}}"
           - name: sparql-output-graph
