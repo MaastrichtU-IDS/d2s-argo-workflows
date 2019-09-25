@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: d2s-sparql-operations
-        image: vemonet/d2s-sparql-operations
+        image: maastrichtuids/d2s-sparql-operations
         env:
         - name: triplestore_url
           value: "http://graphdb.dumontierlab.com"

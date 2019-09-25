@@ -15,7 +15,7 @@ spec:
       claimName: data2services-storage
   containers:
   - name: d2s-drill
-    image: vemonet/apache-drill:latest
+    image: maastrichtuids/apache-drill:latest
     restartPolicy: OnFailure
     #command: [ "tail", "-f", "/dev/null"]
     volumeMounts:

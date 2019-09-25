@@ -63,7 +63,7 @@ spec:
 
   - name: d2s-download
     container:
-      image: vemonet/d2s-download:latest
+      image: maastrichtuids/d2s-download:latest
       args: [ "--download-datasets", "{{workflow.parameters.dataset}}", "--working-path", "/data/{{workflow.parameters.dataset}}/input",
       "--username", "{{workflow.parameters.download_username}}"] 
       volumeMounts:
@@ -73,7 +73,7 @@ spec:
   - name: apache-drill
     daemon: true                        # start influxdb as a daemon
     container:
-      image: vemonet/apache-drill:latest
+      image: maastrichtuids/apache-drill:latest
       volumeMounts:
         - name: workdir
           mountPath: /data # readonly?
@@ -94,7 +94,7 @@ spec:
       parameters:
       - name: input_data_jdbc
     container:
-      image: vemonet/autor2rml:latest
+      image: maastrichtuids/autor2rml:latest
       args: ["-j", "{{inputs.parameters.input_data_jdbc}}", 
       "-o", "/data/{{workflow.parameters.dataset}}/output/mapping.trig", "-d", "/data/{{workflow.parameters.dataset}}/input",
       "-b", "https://w3id.org/data2services/", "-g", "{{workflow.parameters.sparql_tmp_graph_uri}}"]
