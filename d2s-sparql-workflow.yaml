@@ -12,7 +12,7 @@ spec:
       - name: repository
       - name: executeFile
     container:
-      image: vemonet/data2services-sparql-operations
+      image: vemonet/d2s-sparql-operations
       args: ["-ep", "http://graphdb.dumontierlab.com", "-rep", "{{inputs.parameters.repository}}", 
     "-op", "update", "-un", "import_user", "-pw", "test", "-f", "{{inputs.parameters.executeFile}}"]
 
@@ -23,7 +23,7 @@ spec:
         arguments:
           parameters:
           - name: executeFile
-            value: https://raw.githubusercontent.com/MaastrichtU-IDS/data2services-sparql-operations/master/src/main/resources/example-insert.rq
+            value: https://raw.githubusercontent.com/MaastrichtU-IDS/d2s-sparql-operations/master/src/main/resources/example-insert.rq
           - name: repository
             value: public
     - - name: execute2
@@ -31,6 +31,6 @@ spec:
         arguments:
           parameters:
           - name: executeFile
-            value: https://raw.githubusercontent.com/MaastrichtU-IDS/data2services-sparql-operations/master/src/main/resources/example-insert.rq
+            value: https://raw.githubusercontent.com/MaastrichtU-IDS/d2s-sparql-operations/master/src/main/resources/example-insert.rq
           - name: repository
             value: test

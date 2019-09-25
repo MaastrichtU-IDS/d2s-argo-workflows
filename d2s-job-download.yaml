@@ -13,7 +13,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: d2s-download
-        image: vemonet/data2services-download:latest
+        image: vemonet/d2s-download:latest
         env:
         - name: dataset-to-download
           value: "pubmed"

@@ -46,11 +46,11 @@ Run `oc login` to connect to the [OpenShift cluster](https://app.dsri.unimaas.nl
 
 ```shell
 # steps based workflow
-argo submit data2services-argo-workflows/d2s-workflow-transform-xml.yaml \
+argo submit d2s-argo-workflows/d2s-workflow-transform-xml.yaml \
   -f support/config/config-transform-xml-drugbank.yml
 
 # DAG workflow
-argo submit data2services-argo-workflows/d2s-workflow-transform-xml-dag.yaml \
+argo submit d2s-argo-workflows/d2s-workflow-transform-xml-dag.yaml \
   -f support/config/config-transform-xml-drugbank.yml
 
 # Test
@@ -69,7 +69,7 @@ argo list
 
 To get into the container. Create YAML with command `tail /dev/null` to keep it running.
 
-Example with [data2services-download](https://github.com/MaastrichtU-IDS/data2services-download):
+Example with [d2s-download](https://github.com/MaastrichtU-IDS/d2s-download):
 
 ```yaml
 apiVersion: v1
@@ -86,7 +86,7 @@ spec:
       claimName: data2services-storage
   containers:
   - name: d2s-download
-    image: vemonet/data2services-download:latest
+    image: vemonet/d2s-download:latest
     command: [ "tail", "-f", "/dev/null"]
     volumeMounts:
     - name: workdir
@@ -183,7 +183,7 @@ Now in the workflow definition you can use the secret as environment variable
     - name: sparql-triplestore-repository
     - name: sparql-triplestore-username
   container:
-    image: vemonet/data2services-sparql-operations:latest
+    image: vemonet/d2s-sparql-operations:latest
     args: ["-ep", "{{inputs.parameters.sparql-triplestore-url}}", 
       "-rep", "{{inputs.parameters.sparql-triplestore-repository}}", 
       "-op", "update", "-f", "{{inputs.parameters.sparql-queries-path}}",

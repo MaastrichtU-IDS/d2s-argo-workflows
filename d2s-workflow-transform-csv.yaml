@@ -61,7 +61,7 @@ spec:
 
   - name: d2s-download
     container:
-      image: vemonet/data2services-download:latest
+      image: vemonet/d2s-download:latest
       args: [ "--download-datasets", "{{workflow.parameters.dataset}}", "--working-path", "/data/{{workflow.parameters.dataset}}/input",
       "--username", "{{workflow.parameters.download_username}}"] 
       volumeMounts:
