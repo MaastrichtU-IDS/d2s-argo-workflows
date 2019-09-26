@@ -6,6 +6,8 @@ metadata:
   labels:
     purpose: d2s-services
     service: virtuoso
+    # deployment: docker-registry-1
+    # deploymentconfig: docker-registry
   name: d2s-pod-virtuoso2
   namespace: argo
 spec:
