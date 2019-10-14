@@ -88,7 +88,7 @@ spec:
       claimName: data2services-storage
   containers:
   - name: d2s-download
-    image: maastrichtuids/d2s-download:latest
+    image: umids/d2s-download:latest
     command: [ "tail", "-f", "/dev/null"]
     volumeMounts:
     - name: workdir
@@ -185,7 +185,7 @@ Now in the workflow definition you can use the secret as environment variable
     - name: sparql-triplestore-repository
     - name: sparql-triplestore-username
   container:
-    image: maastrichtuids/d2s-sparql-operations:latest
+    image: umids/d2s-sparql-operations:latest
     args: ["-ep", "{{inputs.parameters.sparql-triplestore-url}}", 
       "-rep", "{{inputs.parameters.sparql-triplestore-repository}}", 
       "-op", "update", "-f", "{{inputs.parameters.sparql-queries-path}}",

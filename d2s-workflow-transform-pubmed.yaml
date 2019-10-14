@@ -117,7 +117,7 @@ spec:
 
   - name: d2s-download
     container:
-      image: maastrichtuids/d2s-download:latest
+      image: umids/d2s-download:latest
       args: [ "--download-datasets", "{{workflow.parameters.dataset}}", "--working-path", "/data/{{workflow.parameters.dataset}}/input",
       "--username", "{{workflow.parameters.download-username}}"] 
       volumeMounts:
@@ -126,7 +126,7 @@ spec:
 
   - name: xml2rdf
     container:
-      image: maastrichtuids/xml2rdf:latest
+      image: umids/xml2rdf:latest
       args: [ "-i", "/data/{{workflow.parameters.dataset}}/input/{{workflow.parameters.dataset}}/**/*.xml*", 
         "-o", "/data/{{workflow.parameters.dataset}}/output/rdf_output.nq.gz", "-g", "{{workflow.parameters.sparql-tmp-graph-uri}}" ]
       volumeMounts:
@@ -135,7 +135,7 @@ spec:
 
   - name: rdf-upload
     container:
-      image: maastrichtuids/rdf-upload:latest
+      image: umids/rdf-upload:latest
       args: ["-url", "{{workflow.parameters.sparql-tmp-triplestore-url}}", 
       "-rep", "{{workflow.parameters.sparql-tmp-triplestore-repository}}", 
       "-if", "/data/{{workflow.parameters.dataset}}/output/rdf_output.nq", 
@@ -156,7 +156,7 @@ spec:
       - name: sparql-triplestore-username
       - name: sparql-triplestore-password
     container:
-      image: maastrichtuids/d2s-sparql-operations:latest
+      image: umids/d2s-sparql-operations:latest
       args: ["-ep", "{{inputs.parameters.sparql-triplestore-url}}", 
         "-rep", "{{inputs.parameters.sparql-triplestore-repository}}", 
         "-op", "update", "-f", "{{inputs.parameters.sparql-queries-path}}",

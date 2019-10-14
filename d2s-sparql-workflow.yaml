@@ -12,7 +12,7 @@ spec:
       - name: repository
       - name: executeFile
     container:
-      image: maastrichtuids/d2s-sparql-operations
+      image: umids/d2s-sparql-operations
       args: ["-ep", "http://graphdb.dumontierlab.com", "-rep", "{{inputs.parameters.repository}}", 
     "-op", "update", "-un", "import_user", "-pw", "test", "-f", "{{inputs.parameters.executeFile}}"]
 
