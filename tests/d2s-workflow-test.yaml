@@ -4,6 +4,8 @@ metadata:
   generateName: d2s-workflow-test-
 spec:
   entrypoint: execute-workflow
+  # Run it:
+  # argo submit tests/d2s-workflow-test.yaml -f tests/config-argo-test.yml
 
   volumes:
   - name: workdir
@@ -24,7 +26,7 @@ spec:
         arguments:
           parameters:
           - name: dataset
-            value: '{{workflow.parameters.dataset}}'
+            value: "/data/{{workflow.parameters.dataset}}/test"
 
   - name: print-thing
     inputs:
@@ -32,4 +34,4 @@ spec:
       - name: dataset
     container:
       image: alpine:3.7
-      command: [echo, '/data/{{inputs.parameters.dataset}}/test']  
+      command: [echo, '{{inputs.parameters.dataset}}']  
