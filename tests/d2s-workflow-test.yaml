@@ -5,11 +5,8 @@ metadata:
 spec:
   entrypoint: execute-workflow
 
-  # Use existing volume
   volumes:
   - name: workdir
-    # persistentVolumeClaim:
-    #   claimName: d2s-storage
     hostPath:
       path: /data/d2s-workspace
       type: Directory
@@ -17,13 +14,11 @@ spec:
   arguments:
     parameters:
     - name: dataset
-      value: drugbank
+      value: null
 
   templates:
   - name: execute-workflow
     steps:
-    # - - name: download-files
-    #     template: d2s-download
     - - name: printy
         template: print-thing
         arguments:
