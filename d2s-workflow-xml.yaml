@@ -1,36 +1,36 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  generateName: d2s-workflow-transform-xml-
+  generateName: d2s-workflow-xml-
 spec:
   entrypoint: execute-workflow
 
   # Use existing volume
   volumes:
   - name: workdir
-    persistentVolumeClaim:
-      claimName: data2services-storage
+    # persistentVolumeClaim:
+    #   claimName: d2s-storage
+    hostPath:
+      path: /data/d2s-workspace
+      type: Directory
 
   arguments:
     parameters:
     - name: dataset
-      value: null
-    - name: download-username
-      value: my-download-username
+      value: drugbank
     - name: sparql-tmp-graph-uri
       value: https://w3id.org/data2services/graph/xml2rdf
     - name: sparql-tmp-triplestore-url
-      value: http://node000002.cluster.ids.unimaas.nl/
-    - name: sparql-tmp-triplestore-repository
-      value: test
+      value: http://graphdb.dumontierlab.com/repositories/test-vincent
+      # value: http://node000002.cluster.ids.unimaas.nl/
+    # - name: sparql-tmp-triplestore-repository
+    #   value: test-vincent
     - name: sparql-tmp-triplestore-username
       value: import_user
     - name: sparql-tmp-triplestore-password
       value: null
     - name: sparql-final-triplestore-url
-      value: http://node000002.cluster.ids.unimaas.nl/
-    - name: sparql-final-triplestore-repository
-      value: test
+      value: http://graphdb.dumontierlab.com/repositories/test-vincent
     - name: sparql-final-triplestore-username
       value: import_user
     - name: sparql-final-triplestore-password
@@ -47,12 +47,20 @@ spec:
   templates:
   - name: execute-workflow
     steps:
-    - - name: download-files
-        template: d2s-download
+    # - - name: download-files
+    #     template: d2s-download
     - - name: run-xml2rdf
         template: xml2rdf
+        arguments:
+          parameters:
+          - name: dataset
+            value: '{{workflow.parameters.dataset}}'
     - - name: run-rdf-upload
         template: rdf-upload
+        arguments:
+          parameters:
+          - name: dataset
+            value: "{{workflow.parameters.dataset}}"
     - - name: sparql-insert-metadata
         template: d2s-sparql-operations
         arguments:
@@ -67,8 +75,6 @@ spec:
             value: "{{workflow.parameters.sparql-tmp-service-url}}"
           - name: sparql-triplestore-url
             value: "{{workflow.parameters.sparql-final-triplestore-url}}"
-          - name: sparql-triplestore-repository
-            value: "{{workflow.parameters.sparql-final-triplestore-repository}}"
           - name: sparql-triplestore-username
             value: "{{workflow.parameters.sparql-final-triplestore-username}}"
           - name: sparql-triplestore-password
@@ -87,8 +93,6 @@ spec:
             value: "{{workflow.parameters.sparql-tmp-service-url}}"
           - name: sparql-triplestore-url
             value: "{{workflow.parameters.sparql-final-triplestore-url}}"
-          - name: sparql-triplestore-repository
-            value: "{{workflow.parameters.sparql-final-triplestore-repository}}"
           - name: sparql-triplestore-username
             value: "{{workflow.parameters.sparql-final-triplestore-username}}"
           - name: sparql-triplestore-password
@@ -107,39 +111,47 @@ spec:
             value: "{{workflow.parameters.sparql-tmp-service-url}}"   # TODO: remove?
           - name: sparql-triplestore-url
             value: "{{workflow.parameters.sparql-final-triplestore-url}}"
-          - name: sparql-triplestore-repository
-            value: "{{workflow.parameters.sparql-final-triplestore-repository}}"
           - name: sparql-triplestore-username
             value: "{{workflow.parameters.sparql-final-triplestore-username}}"
           - name: sparql-triplestore-password
             value: "{{workflow.parameters.sparql-final-triplestore-password}}"
 
 
-  - name: d2s-download
-    container:
-      image: umids/d2s-download:latest
-      args: [ "--download-datasets", "{{workflow.parameters.dataset}}", "--working-path", "/data/{{workflow.parameters.dataset}}/input",
-      "--username", "{{workflow.parameters.download-username}}"] 
-      volumeMounts:
-      - name: workdir
-        mountPath: /data
+  # - name: d2s-download
+  #   container:
+  #     image: umids/d2s-download:latest
+  #     args: [ "--download-datasets", "{{workflow.parameters.dataset}}", "--working-path", "/data/{{workflow.parameters.dataset}}/input",
+  #     "--username", "{{workflow.parameters.download-username}}"] 
+  #     volumeMounts:
+  #     - name: workdir
+  #       mountPath: /data
 
   - name: xml2rdf
+    inputs:
+      parameters:
+      - name: dataset
     container:
       image: umids/xml2rdf:latest
-      args: [ "-i", "/data/{{workflow.parameters.dataset}}/input/{{workflow.parameters.dataset}}/*.xml*", 
-        "-o", "/data/{{workflow.parameters.dataset}}/output/rdf_output.nq", "-g", "{{workflow.parameters.sparql-tmp-graph-uri}}" ]
+      args: [ "-i", "/data/input/{{inputs.parameters.dataset}}/*.xml", 
+        "-o", "/data/output/{{inputs.parameters.dataset}}/rdf_output.nq",
+        "-g", "{{workflow.parameters.sparql-tmp-graph-uri}}" ]
+      # args: [ "-i", "{{inputs.parameters.input}}", 
+      #   "-o", "{{inputs.parameters.output}}",
+      #   "-g", "{{workflow.parameters.sparql-tmp-graph-uri}}" ]
       volumeMounts:
       - name: workdir
         mountPath: /data
 
   - name: rdf-upload
+    inputs:
+      parameters:
+      - name: dataset
     container:
       image: umids/rdf-upload:latest
-      args: ["-url", "{{workflow.parameters.sparql-tmp-triplestore-url}}", 
-      "-rep", "{{workflow.parameters.sparql-tmp-triplestore-repository}}", 
-      "-if", "/data/{{workflow.parameters.dataset}}/output/rdf_output.nq", 
-      "-un", "{{workflow.parameters.sparql-tmp-triplestore-username}}", "-pw", "{{workflow.parameters.sparql-tmp-triplestore-password}}"]
+      args: ["-url", "{{workflow.parameters.sparql-tmp-triplestore-url}}",
+      "-if", "/data/output/{{inputs.parameters.dataset}}/rdf_output.nq", 
+      "-un", "{{workflow.parameters.sparql-tmp-triplestore-username}}", 
+      "-pw", "{{workflow.parameters.sparql-tmp-triplestore-password}}"]
       volumeMounts:
       - name: workdir
         mountPath: /data
@@ -152,13 +164,11 @@ spec:
       - name: sparql-output-graph
       - name: sparql-service-url
       - name: sparql-triplestore-url
-      - name: sparql-triplestore-repository
       - name: sparql-triplestore-username
       - name: sparql-triplestore-password
     container:
       image: umids/d2s-sparql-operations:latest
       args: ["-ep", "{{inputs.parameters.sparql-triplestore-url}}", 
-        "-rep", "{{inputs.parameters.sparql-triplestore-repository}}", 
         "-op", "update", "-f", "{{inputs.parameters.sparql-queries-path}}",
         "-un", "{{inputs.parameters.sparql-triplestore-username}}", 
         "-pw", "{{inputs.parameters.sparql-triplestore-password}}",

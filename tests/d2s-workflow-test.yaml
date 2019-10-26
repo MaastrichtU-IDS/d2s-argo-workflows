@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: d2s-workflow-test-
+spec:
+  entrypoint: execute-workflow
+
+  # Use existing volume
+  volumes:
+  - name: workdir
+    # persistentVolumeClaim:
+    #   claimName: d2s-storage
+    hostPath:
+      path: /data/d2s-workspace
+      type: Directory
+
+  arguments:
+    parameters:
+    - name: dataset
+      value: drugbank
+
+  templates:
+  - name: execute-workflow
+    steps:
+    # - - name: download-files
+    #     template: d2s-download
+    - - name: printy
+        template: print-thing
+        arguments:
+          parameters:
+          - name: dataset
+            value: '{{workflow.parameters.dataset}}'
+
+  - name: print-thing
+    inputs:
+      parameters:
+      - name: dataset
+    container:
+      image: alpine:3.7
+      command: [echo, '/data/{{inputs.parameters.dataset}}/test']  
