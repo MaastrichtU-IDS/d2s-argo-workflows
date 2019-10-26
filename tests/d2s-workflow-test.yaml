@@ -23,15 +23,15 @@ spec:
     steps:
     - - name: printy
         template: print-thing
-        arguments:
-          parameters:
-          - name: dataset
-            value: "/data/{{workflow.parameters.dataset}}/test"
+        # arguments:
+        #   parameters:
+        #   - name: dataset
+        #     value: "/data/{{workflow.parameters.dataset}}/test"
 
   - name: print-thing
-    inputs:
-      parameters:
-      - name: dataset
+    # inputs:
+    #   parameters:
+    #   - name: dataset
     container:
       image: alpine:3.7
-      command: [echo, '{{inputs.parameters.dataset}}']  
+      command: [echo, '/data/{{workflow.parameters.dataset}}/test']  
