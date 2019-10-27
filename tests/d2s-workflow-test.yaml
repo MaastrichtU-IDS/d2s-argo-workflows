@@ -34,4 +34,4 @@ spec:
     #   - name: dataset
     container:
       image: alpine:3.7
-      command: [echo, '/data/{{workflow.parameters.dataset}}/test']  
+      command: [echo, "/data/{{workflow.parameters.dataset}}/test"]
