@@ -14,6 +14,10 @@ spec:
   - name: test-devnull
     image: umids/rdfunit:latest
     command: [ "tail", "-f", "/dev/null"]
+    # args: ["-d", "http://sparql.wikipathways.org/",
+    #   "-f", "/data/dqa-workspace/",
+    #   "-s", "https://www.w3.org/2012/pyRdfa/extract?uri=http://vocabularies.wikipathways.org/wp#", 
+    #   "-o", "ttl"]
     resources:
       limits:
         cpu: 1000m 
