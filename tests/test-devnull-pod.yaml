@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    purpose: test
+  name: test-devnull-pod
+  namespace: test-vincent
+spec:
+  volumes:
+  - name: workdir
+    persistentVolumeClaim:
+      claimName: pvc-mapr-projects-test-vincent
+  containers:
+  - name: test-devnull
+    image: umids/rdfunit:latest
+    command: [ "tail", "-f", "/dev/null"]
+    resources:
+      limits:
+        cpu: 1000m 
+        memory: 10Gi 
+    volumeMounts:
+    - name: workdir
+      mountPath: /data
+      # subPath: dqa-workspace
