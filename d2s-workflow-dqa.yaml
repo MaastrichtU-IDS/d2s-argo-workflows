@@ -42,6 +42,18 @@ spec:
             value: "{{workflow.parameters.sparql-triplestore-username}}"
           - name: sparql-triplestore-password
             value: "{{workflow.parameters.sparql-triplestore-password}}"
+    - - name: run-rdfunit
+        template: rdfunit
+        arguments:
+          parameters:
+          - name: dataset
+            value: "testdqa-datasets"
+    - - name: run-fairsharing-metrics
+        template: fairsharing-metrics
+        arguments:
+          parameters:
+          - name: dataset
+            value: "testdqa-datasets_fairsharing"
     # - - name: run-rdf-upload
     #     template: rdf-upload
     #     arguments:
@@ -65,6 +77,40 @@ spec:
         "-pw", "{{inputs.parameters.sparql-triplestore-password}}",
         "--var-input", "{{inputs.parameters.sparql-graph-uri}}" ]
 
+  - name: rdfunit
+    inputs:
+      parameters:
+      - name: dataset
+    container:
+      image: umids/rdfunit:latest
+      # args: ["-url", "{{workflow.parameters.sparql-tmp-triplestore-url}}",
+      # "-if", "/data/output/{{inputs.parameters.dataset}}/rdf_output.nq", 
+      # "-un", "{{workflow.parameters.sparql-tmp-triplestore-username}}", 
+      # "-pw", "{{workflow.parameters.sparql-tmp-triplestore-password}}"]
+      args: ["-d", "http://sparql.wikipathways.org/",
+      "-f", "/data/",
+      "-s", "https://www.w3.org/2012/pyRdfa/extract?uri=http://vocabularies.wikipathways.org/wp#", 
+      "-o", "ttl"]
+      volumeMounts:
+      - name: workdir
+        mountPath: /data
+        subPath: dqa-workspace
+
+  - name: fairsharing-metrics
+    inputs:
+      parameters:
+      - name: dataset
+    container:
+      image: umids/fairsharing-metrics:latest
+      # args: ["-url", "{{workflow.parameters.sparql-tmp-triplestore-url}}",
+      # "-if", "/data/output/{{inputs.parameters.dataset}}/rdf_output.nq", 
+      # "-un", "{{workflow.parameters.sparql-tmp-triplestore-username}}", 
+      # "-pw", "{{workflow.parameters.sparql-tmp-triplestore-password}}"]
+      args: ["https://fairsharing.org/biodbcore-000015"]
+      volumeMounts:
+      - name: workdir
+        mountPath: /data
+        subPath: dqa-workspace
   
   # - name: rdf-upload
   #   inputs:
