@@ -48,12 +48,12 @@ spec:
           parameters:
           - name: dataset
             value: "testdqa-datasets"
-    - - name: run-fairsharing-metrics
-        template: fairsharing-metrics
-        arguments:
-          parameters:
-          - name: dataset
-            value: "testdqa-datasets_fairsharing"
+    # - - name: run-fairsharing-metrics
+    #     template: fairsharing-metrics
+    #     arguments:
+    #       parameters:
+    #       - name: dataset
+    #         value: "testdqa-datasets_fairsharing"
     # - - name: run-rdf-upload
     #     template: rdf-upload
     #     arguments:
@@ -84,13 +84,13 @@ spec:
     container:
       image: umids/rdfunit:latest
       args: ["-d", "http://sparql.wikipathways.org/",
-      "-f", "/data/",
+      "-f", "/data/dqa-workspace/",
       "-s", "https://www.w3.org/2012/pyRdfa/extract?uri=http://vocabularies.wikipathways.org/wp#", 
       "-o", "ttl"]
       volumeMounts:
       - name: workdir
         mountPath: /data
-        subPath: dqa-workspace
+        # subPath: dqa-workspace
 
   - name: fairsharing-metrics
     inputs:
@@ -103,7 +103,7 @@ spec:
       volumeMounts:
       - name: workdir
         mountPath: /data
-        subPath: dqa-workspace
+        # subPath: dqa-workspace
   
   # - name: rdf-upload
   #   inputs:
