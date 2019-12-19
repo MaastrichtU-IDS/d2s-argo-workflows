@@ -1,0 +1,11 @@
+
+# RDF4J server SPARQL endpoint to load the BioLink RDF
+# sparql-triplestore-url: http://node000002.cluster.ids.unimaas.nl/
+# sparql-triplestore-repository: "test-dqa"
+
+# triplestore_url: http://graphdb.dumontierlab.com/repositories/test-dqa/statements
+triplestore_url: http://node000002.cluster.ids.unimaas.nl/repositories/test-dqa/statements
+sparql-triplestore-username: import_user
+sparql-triplestore-password: password
+
+sparql-graph-uri: https://w3id.org/data2services/graph/biolink/hgnc

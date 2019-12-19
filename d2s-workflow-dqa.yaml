@@ -1,0 +1,86 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: d2s-workflow-dqa-
+spec:
+  entrypoint: execute-workflow
+
+  # Use existing volume
+  volumes:
+  - name: workdir
+    persistentVolumeClaim:
+      claimName: pvc-mapr-projects-test-vincent 
+    # hostPath:
+    #   path: /data/dqa-workspace
+    #   type: Directory
+
+  arguments:
+    parameters:
+    - name: sparql-triplestore-url
+      value: http://graphdb.dumontierlab.com/repositories/test-dqa/statements
+    - name: sparql-triplestore-username
+      value: import_user
+    - name: sparql-triplestore-password
+      value: null
+    - name: sparql-graph-uri
+      value: https://w3id.org/data2services/graph/biolink/hgnc
+
+  templates:
+  - name: execute-workflow
+    steps:
+    - - name: sparql-compute-hcls-stats
+        template: d2s-sparql-operations
+        arguments:
+          parameters:
+          - name: sparql-queries-path
+            value: "https://github.com/MaastrichtU-IDS/d2s-transform-repository/tree/master/sparql/compute-hcls-stats"
+          - name: sparql-graph-uri
+            value: "{{workflow.parameters.sparql-graph-uri}}"
+          - name: sparql-triplestore-url
+            value: "{{workflow.parameters.sparql-triplestore-url}}"
+          - name: sparql-triplestore-username
+            value: "{{workflow.parameters.sparql-triplestore-username}}"
+          - name: sparql-triplestore-password
+            value: "{{workflow.parameters.sparql-triplestore-password}}"
+    # - - name: run-rdf-upload
+    #     template: rdf-upload
+    #     arguments:
+    #       parameters:
+    #       - name: dataset
+    #         value: "{{workflow.parameters.dataset}}"
+
+  - name: d2s-sparql-operations
+    inputs:
+      parameters:
+      - name: sparql-queries-path
+      - name: sparql-graph-uri
+      - name: sparql-triplestore-url
+      - name: sparql-triplestore-username
+      - name: sparql-triplestore-password
+    container:
+      image: umids/d2s-sparql-operations:latest
+      args: ["-ep", "{{inputs.parameters.sparql-triplestore-url}}", 
+        "-op", "update", "-f", "{{inputs.parameters.sparql-queries-path}}",
+        "-un", "{{inputs.parameters.sparql-triplestore-username}}", 
+        "-pw", "{{inputs.parameters.sparql-triplestore-password}}",
+        "--var-input", "{{inputs.parameters.sparql-graph-uri}}" ]
+
+  
+  # - name: rdf-upload
+  #   inputs:
+  #     parameters:
+  #     - name: dataset
+  #   container:
+  #     image: umids/rdf-upload:latest
+  #     # args: ["-url", "{{workflow.parameters.sparql-tmp-triplestore-url}}",
+  #     # "-if", "/data/output/{{inputs.parameters.dataset}}/rdf_output.nq", 
+  #     # "-un", "{{workflow.parameters.sparql-tmp-triplestore-username}}", 
+  #     # "-pw", "{{workflow.parameters.sparql-tmp-triplestore-password}}"]
+  #     args: ["-url", "http://graphdb.dumontierlab.com/repositories/test-vincent/statements",
+  #     "-if", "/data/output/drugbank",
+  #     "-un", "import_user", 
+  #     "-pw", "test"]
+  #     volumeMounts:
+  #     - name: workdir
+  #       mountPath: /data
+  #       subPath: dqa-workspace
