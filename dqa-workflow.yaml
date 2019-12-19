@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  generateName: d2s-workflow-dqa-
+  generateName: dqa-workflow-
 spec:
   entrypoint: execute-workflow
 
@@ -83,10 +83,6 @@ spec:
       - name: dataset
     container:
       image: umids/rdfunit:latest
-      # args: ["-url", "{{workflow.parameters.sparql-tmp-triplestore-url}}",
-      # "-if", "/data/output/{{inputs.parameters.dataset}}/rdf_output.nq", 
-      # "-un", "{{workflow.parameters.sparql-tmp-triplestore-username}}", 
-      # "-pw", "{{workflow.parameters.sparql-tmp-triplestore-password}}"]
       args: ["-d", "http://sparql.wikipathways.org/",
       "-f", "/data/",
       "-s", "https://www.w3.org/2012/pyRdfa/extract?uri=http://vocabularies.wikipathways.org/wp#", 
@@ -102,10 +98,7 @@ spec:
       - name: dataset
     container:
       image: umids/fairsharing-metrics:latest
-      # args: ["-url", "{{workflow.parameters.sparql-tmp-triplestore-url}}",
-      # "-if", "/data/output/{{inputs.parameters.dataset}}/rdf_output.nq", 
-      # "-un", "{{workflow.parameters.sparql-tmp-triplestore-username}}", 
-      # "-pw", "{{workflow.parameters.sparql-tmp-triplestore-password}}"]
+      # args: ["-url", "{{workflow.parameters.sparql-triplestore-url}}]
       args: ["https://fairsharing.org/biodbcore-000015"]
       volumeMounts:
       - name: workdir
