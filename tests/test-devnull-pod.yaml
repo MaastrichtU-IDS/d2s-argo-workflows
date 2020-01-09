@@ -4,15 +4,17 @@ metadata:
   labels:
     purpose: test
   name: test-devnull-pod
-  namespace: test-vincent
 spec:
   volumes:
   - name: workdir
-    persistentVolumeClaim:
-      claimName: pvc-mapr-projects-test-vincent
+    hostPath:
+      path: /data/dqa-workspace
+      type: Directory
+    # persistentVolumeClaim:
+    #   claimName: pvc-mapr-projects-test-vincent
   containers:
   - name: test-devnull
-    image: umids/rdfunit:latest
+    image: aksw/rdfunit:latest
     command: [ "tail", "-f", "/dev/null"]
     # args: ["-d", "http://sparql.wikipathways.org/",
     #   "-f", "/data/dqa-workspace/",

@@ -8,11 +8,11 @@ spec:
   # Use existing volume
   volumes:
   - name: workdir
-    persistentVolumeClaim:
-      claimName: pvc-mapr-projects-test-vincent 
-    # hostPath:
-    #   path: /data/dqa-workspace
-    #   type: Directory
+    # persistentVolumeClaim:
+    #   claimName: pvc-mapr-projects-test-vincent 
+    hostPath:
+      path: /data/dqa-workspace
+      type: Directory
 
   arguments:
     parameters:
