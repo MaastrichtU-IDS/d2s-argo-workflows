@@ -82,9 +82,9 @@ spec:
       parameters:
       - name: dataset
     container:
-      image: umids/rdfunit:latest
-      args: ["-d", "http://sparql.wikipathways.org/",
-      "-f", "/data/dqa-workspace/",
+      image: aksw/rdfunit:latest
+      args: ["-d", "http://sparql.wikipathways.org/sparql",
+      "-f", "/data/",
       "-s", "https://www.w3.org/2012/pyRdfa/extract?uri=http://vocabularies.wikipathways.org/wp#", 
       "-o", "ttl"]
       volumeMounts:
