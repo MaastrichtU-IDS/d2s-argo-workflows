@@ -31,45 +31,48 @@ spec:
 
   templates:
   - name: execute-workflow
-    steps:
-    # - - name: sparql-compute-hcls-stats
-    #     template: d2s-sparql-operations
-    #     arguments:
-    #       parameters:
-    #       - name: sparql-queries-path
-    #         value: "https://github.com/MaastrichtU-IDS/d2s-transform-repository/tree/master/sparql/compute-hcls-stats"
-    #       - name: graph-uri
-    #         value: "{{workflow.parameters.graph-uri}}"
-    #       - name: triplestore-url
-    #         value: "{{workflow.parameters.triplestore-url}}"
-    #       - name: triplestore-username
-    #         value: "{{workflow.parameters.triplestore-username}}"
-    #       - name: triplestore-password
-    #         value: "{{workflow.parameters.triplestore-password}}"
-    - - name: run-rdfunit
-        template: rdfunit
-        arguments:
-          parameters:
-          - name: rdfunit-schema
-            value: "{{workflow.parameters.rdfunit-schema}}"
-    # - - name: run-fairsharing-metrics
-    #     template: fairsharing-metrics
-    #     arguments:
-    #       parameters:
-    #       - name: fairsharing-metrics-url
-    #         value: "{{workflow.parameters.fairsharing-metrics-url}}"
-    # - - name: upload-rdfunit
-    #     template: rdf-upload
-    #     arguments:
-    #       parameters:
-    #       - name: file-to-upload
-    #         value: "/data/results"
-    # - - name: upload-fairsharing-metrics
-    #     template: rdf-upload
-    #     arguments:
-    #       parameters:
-    #       - name: file-to-upload
-    #         value: "/data/fairsharing.nt"
+    dag:
+      tasks:
+      - - name: sparql-compute-hcls-stats
+          template: d2s-sparql-operations
+          arguments:
+            parameters:
+            - name: sparql-queries-path
+              value: "https://github.com/MaastrichtU-IDS/d2s-transform-repository/tree/master/sparql/compute-hcls-stats"
+            - name: graph-uri
+              value: "{{workflow.parameters.graph-uri}}"
+            - name: triplestore-url
+              value: "{{workflow.parameters.triplestore-url}}"
+            - name: triplestore-username
+              value: "{{workflow.parameters.triplestore-username}}"
+            - name: triplestore-password
+              value: "{{workflow.parameters.triplestore-password}}"
+      - - name: run-rdfunit
+          template: rdfunit
+          arguments:
+            parameters:
+            - name: rdfunit-schema
+              value: "{{workflow.parameters.rdfunit-schema}}"
+      # - - name: run-fairsharing-metrics
+      #     template: fairsharing-metrics
+      #     arguments:
+      #       parameters:
+      #       - name: fairsharing-metrics-url
+      #         value: "{{workflow.parameters.fairsharing-metrics-url}}"
+      - - name: upload-rdfunit
+          template: rdf-upload
+          dependencies: [run-rdfunit]
+          arguments:
+            parameters:
+            - name: file-to-upload
+              value: "/data/results"
+      - - name: upload-fairsharing-metrics
+          template: rdf-upload
+          dependencies: [run-fairsharing-metrics]
+          arguments:
+            parameters:
+            - name: file-to-upload
+              value: "/data/fairsharing.nt"
 
   - name: d2s-sparql-operations
     inputs:
@@ -123,10 +126,6 @@ spec:
       "-un", "{{workflow.parameters.triplestore-username}}", 
       "-pw", "{{workflow.parameters.triplestore-password}}",
       "-g", "{{workflow.parameters.graph-uri}}"]
-      # args: ["-url", "http://graphdb.dumontierlab.com/repositories/test-vincent/statements",
-      # "-if", "/data/output/drugbank",
-      # "-un", "import_user", 
-      # "-pw", "test"]
       volumeMounts:
       - name: workdir
         mountPath: /data
