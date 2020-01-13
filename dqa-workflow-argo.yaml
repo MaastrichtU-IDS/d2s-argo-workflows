@@ -22,7 +22,7 @@ spec:
       value: import_user
     - name: triplestore-password
       value: null
-    - name: sparql-graph-uri
+    - name: graph-uri
       value: https://w3id.org/d2s/graph
     - name: rdfunit-schema
       value: null
@@ -38,8 +38,8 @@ spec:
     #       parameters:
     #       - name: sparql-queries-path
     #         value: "https://github.com/MaastrichtU-IDS/d2s-transform-repository/tree/master/sparql/compute-hcls-stats"
-    #       - name: sparql-graph-uri
-    #         value: "{{workflow.parameters.sparql-graph-uri}}"
+    #       - name: graph-uri
+    #         value: "{{workflow.parameters.graph-uri}}"
     #       - name: triplestore-url
     #         value: "{{workflow.parameters.triplestore-url}}"
     #       - name: triplestore-username
@@ -58,18 +58,24 @@ spec:
     #       parameters:
     #       - name: fairsharing-metrics-url
     #         value: "{{workflow.parameters.fairsharing-metrics-url}}"
-    # - - name: run-rdf-upload
+    # - - name: upload-rdfunit
     #     template: rdf-upload
     #     arguments:
     #       parameters:
-    #       - name: dataset
-    #         value: "{{workflow.parameters.dataset}}"
+    #       - name: file-to-upload
+    #         value: "/data/results"
+    # - - name: upload-fairsharing-metrics
+    #     template: rdf-upload
+    #     arguments:
+    #       parameters:
+    #       - name: file-to-upload
+    #         value: "/data/fairsharing.nt"
 
   - name: d2s-sparql-operations
     inputs:
       parameters:
       - name: sparql-queries-path
-      - name: sparql-graph-uri
+      - name: graph-uri
       - name: triplestore-url
       - name: triplestore-username
       - name: triplestore-password
@@ -79,7 +85,7 @@ spec:
         "-op", "update", "-f", "{{inputs.parameters.sparql-queries-path}}",
         "-un", "{{inputs.parameters.triplestore-username}}", 
         "-pw", "{{inputs.parameters.triplestore-password}}",
-        "--var-input", "{{inputs.parameters.sparql-graph-uri}}" ]
+        "--var-input", "{{inputs.parameters.graph-uri}}" ]
 
   - name: rdfunit
     inputs:
@@ -106,21 +112,21 @@ spec:
       - name: workdir
         mountPath: /data
   
-  # - name: rdf-upload
-  #   inputs:
-  #     parameters:
-  #     - name: dataset
-  #   container:
-  #     image: umids/rdf-upload:latest
-  #     # args: ["-url", "{{workflow.parameters.sparql-tmp-triplestore-url}}",
-  #     # "-if", "/data/output/{{inputs.parameters.dataset}}/rdf_output.nq", 
-  #     # "-un", "{{workflow.parameters.sparql-tmp-triplestore-username}}", 
-  #     # "-pw", "{{workflow.parameters.sparql-tmp-triplestore-password}}"]
-  #     args: ["-url", "http://graphdb.dumontierlab.com/repositories/test-vincent/statements",
-  #     "-if", "/data/output/drugbank",
-  #     "-un", "import_user", 
-  #     "-pw", "test"]
-  #     volumeMounts:
-  #     - name: workdir
-  #       mountPath: /data
-  #       subPath: dqa-workspace
+  - name: rdf-upload
+    inputs:
+      parameters:
+      - name: file-to-upload
+    container:
+      image: umids/rdf-upload:latest
+      args: ["-url", "{{workflow.parameters.triplestore-url}}",
+      "-if", "{{inputs.parameters.file-to-upload}}", 
+      "-un", "{{workflow.parameters.triplestore-username}}", 
+      "-pw", "{{workflow.parameters.triplestore-password}}",
+      "-g", "{{workflow.parameters.graph-uri}}"]
+      # args: ["-url", "http://graphdb.dumontierlab.com/repositories/test-vincent/statements",
+      # "-if", "/data/output/drugbank",
+      # "-un", "import_user", 
+      # "-pw", "test"]
+      volumeMounts:
+      - name: workdir
+        mountPath: /data
