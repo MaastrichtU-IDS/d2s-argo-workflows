@@ -8,11 +8,11 @@ spec:
   # Use existing volume
   volumes:
   - name: workdir
-    persistentVolumeClaim:
-      claimName: pvc-mapr-projects-test-vincent 
-    # hostPath:
-    #   path: /data/dqa-workspace
-    #   type: Directory
+    # persistentVolumeClaim:
+    #   claimName: pvc-mapr-projects-test-vincent 
+    hostPath:
+      path: /data/dqa-workspace
+      type: Directory
 
   arguments:
     parameters:
@@ -28,20 +28,20 @@ spec:
   templates:
   - name: execute-workflow
     steps:
-    - - name: sparql-compute-hcls-stats
-        template: d2s-sparql-operations
-        arguments:
-          parameters:
-          - name: sparql-queries-path
-            value: "https://github.com/MaastrichtU-IDS/d2s-transform-repository/tree/master/sparql/compute-hcls-stats"
-          - name: sparql-graph-uri
-            value: "{{workflow.parameters.sparql-graph-uri}}"
-          - name: sparql-triplestore-url
-            value: "{{workflow.parameters.sparql-triplestore-url}}"
-          - name: sparql-triplestore-username
-            value: "{{workflow.parameters.sparql-triplestore-username}}"
-          - name: sparql-triplestore-password
-            value: "{{workflow.parameters.sparql-triplestore-password}}"
+    # - - name: sparql-compute-hcls-stats
+    #     template: d2s-sparql-operations
+    #     arguments:
+    #       parameters:
+    #       - name: sparql-queries-path
+    #         value: "https://github.com/MaastrichtU-IDS/d2s-transform-repository/tree/master/sparql/compute-hcls-stats"
+    #       - name: sparql-graph-uri
+    #         value: "{{workflow.parameters.sparql-graph-uri}}"
+    #       - name: sparql-triplestore-url
+    #         value: "{{workflow.parameters.sparql-triplestore-url}}"
+    #       - name: sparql-triplestore-username
+    #         value: "{{workflow.parameters.sparql-triplestore-username}}"
+    #       - name: sparql-triplestore-password
+    #         value: "{{workflow.parameters.sparql-triplestore-password}}"
     - - name: run-rdfunit
         template: rdfunit
         arguments:
