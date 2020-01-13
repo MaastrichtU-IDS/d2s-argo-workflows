@@ -8,11 +8,11 @@ spec:
   # Use existing volume
   volumes:
   - name: workdir
-    # persistentVolumeClaim:
-    #   claimName: pvc-mapr-projects-test-vincent 
     hostPath:
       path: /data/dqa-workspace
       type: Directory
+    # persistentVolumeClaim:
+    #   claimName: pvc-test
 
   arguments:
     parameters:
@@ -94,7 +94,6 @@ spec:
       volumeMounts:
       - name: workdir
         mountPath: /data
-        # subPath: dqa-workspace
 
   - name: fairsharing-metrics
     inputs:
@@ -102,12 +101,10 @@ spec:
       - name: fairsharing-metrics-url
     container:
       image: umids/fairsharing-metrics:latest
-      # args: ["-url", "{{workflow.parameters.triplestore-url}}]
       args: ["{{inputs.parameters.fairsharing-metrics-url}}"]
       volumeMounts:
       - name: workdir
         mountPath: /data
-        # subPath: dqa-workspace
   
   # - name: rdf-upload
   #   inputs:
