@@ -12,7 +12,7 @@ triplestore-url: http://sparql.wikipathways.org/sparql
 triplestore-username: import_user
 triplestore-password: password
 
-sparql-graph-uri: https://w3id.org/data2services/graph/biolink/hgnc
+graph-uri: https://w3id.org/d2s/graph/dqa
 
 rdfunit-schema: https://www.w3.org/2012/pyRdfa/extract?uri=http://vocabularies.wikipathways.org/wp#
 
