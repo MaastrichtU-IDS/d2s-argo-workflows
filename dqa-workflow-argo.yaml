@@ -26,6 +26,8 @@ spec:
       value: https://w3id.org/d2s/graph
     - name: rdfunit-schema
       value: null
+    - name: fairsharing-metrics-url
+      value: null
 
   templates:
   - name: execute-workflow
@@ -54,8 +56,8 @@ spec:
     #     template: fairsharing-metrics
     #     arguments:
     #       parameters:
-    #       - name: dataset
-    #         value: "testdqa-datasets_fairsharing"
+    #       - name: fairsharing-metrics-url
+    #         value: "{{workflow.parameters.fairsharing-metrics-url}}"
     # - - name: run-rdf-upload
     #     template: rdf-upload
     #     arguments:
@@ -97,11 +99,11 @@ spec:
   - name: fairsharing-metrics
     inputs:
       parameters:
-      - name: dataset
+      - name: fairsharing-metrics-url
     container:
       image: umids/fairsharing-metrics:latest
       # args: ["-url", "{{workflow.parameters.triplestore-url}}]
-      args: ["https://fairsharing.org/biodbcore-000015"]
+      args: ["{{inputs.parameters.fairsharing-metrics-url}}"]
       volumeMounts:
       - name: workdir
         mountPath: /data
