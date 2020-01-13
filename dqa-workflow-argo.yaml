@@ -16,14 +16,16 @@ spec:
 
   arguments:
     parameters:
-    - name: sparql-triplestore-url
+    - name: triplestore-url
       value: http://graphdb.dumontierlab.com/repositories/test-dqa/statements
-    - name: sparql-triplestore-username
+    - name: triplestore-username
       value: import_user
-    - name: sparql-triplestore-password
+    - name: triplestore-password
       value: null
     - name: sparql-graph-uri
-      value: https://w3id.org/data2services/graph/biolink/hgnc
+      value: https://w3id.org/d2s/graph
+    - name: rdfunit-schema
+      value: null
 
   templates:
   - name: execute-workflow
@@ -36,18 +38,18 @@ spec:
     #         value: "https://github.com/MaastrichtU-IDS/d2s-transform-repository/tree/master/sparql/compute-hcls-stats"
     #       - name: sparql-graph-uri
     #         value: "{{workflow.parameters.sparql-graph-uri}}"
-    #       - name: sparql-triplestore-url
-    #         value: "{{workflow.parameters.sparql-triplestore-url}}"
-    #       - name: sparql-triplestore-username
-    #         value: "{{workflow.parameters.sparql-triplestore-username}}"
-    #       - name: sparql-triplestore-password
-    #         value: "{{workflow.parameters.sparql-triplestore-password}}"
+    #       - name: triplestore-url
+    #         value: "{{workflow.parameters.triplestore-url}}"
+    #       - name: triplestore-username
+    #         value: "{{workflow.parameters.triplestore-username}}"
+    #       - name: triplestore-password
+    #         value: "{{workflow.parameters.triplestore-password}}"
     - - name: run-rdfunit
         template: rdfunit
         arguments:
           parameters:
-          - name: dataset
-            value: "testdqa-datasets"
+          - name: rdfunit-schema
+            value: "{{workflow.parameters.rdfunit-schema}}"
     # - - name: run-fairsharing-metrics
     #     template: fairsharing-metrics
     #     arguments:
@@ -66,26 +68,26 @@ spec:
       parameters:
       - name: sparql-queries-path
       - name: sparql-graph-uri
-      - name: sparql-triplestore-url
-      - name: sparql-triplestore-username
-      - name: sparql-triplestore-password
+      - name: triplestore-url
+      - name: triplestore-username
+      - name: triplestore-password
     container:
       image: umids/d2s-sparql-operations:latest
-      args: ["-ep", "{{inputs.parameters.sparql-triplestore-url}}", 
+      args: ["-ep", "{{inputs.parameters.triplestore-url}}", 
         "-op", "update", "-f", "{{inputs.parameters.sparql-queries-path}}",
-        "-un", "{{inputs.parameters.sparql-triplestore-username}}", 
-        "-pw", "{{inputs.parameters.sparql-triplestore-password}}",
+        "-un", "{{inputs.parameters.triplestore-username}}", 
+        "-pw", "{{inputs.parameters.triplestore-password}}",
         "--var-input", "{{inputs.parameters.sparql-graph-uri}}" ]
 
   - name: rdfunit
     inputs:
       parameters:
-      - name: dataset
+      - name: rdfunit-schema
     container:
       image: aksw/rdfunit:latest
-      args: ["-d", "http://sparql.wikipathways.org/sparql",
+      args: ["-d", "{{workflow.parameters.triplestore-url}}",
       "-f", "/data/",
-      "-s", "https://www.w3.org/2012/pyRdfa/extract?uri=http://vocabularies.wikipathways.org/wp#", 
+      "-s", "{{inputs.parameters.rdfunit-schema}}", 
       "-o", "ttl"]
       volumeMounts:
       - name: workdir
@@ -98,7 +100,7 @@ spec:
       - name: dataset
     container:
       image: umids/fairsharing-metrics:latest
-      # args: ["-url", "{{workflow.parameters.sparql-triplestore-url}}]
+      # args: ["-url", "{{workflow.parameters.triplestore-url}}]
       args: ["https://fairsharing.org/biodbcore-000015"]
       volumeMounts:
       - name: workdir
