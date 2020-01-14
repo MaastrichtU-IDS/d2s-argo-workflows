@@ -33,44 +33,44 @@ spec:
   - name: execute-workflow
     dag:
       tasks:
-      - - name: sparql-compute-hcls-stats
-          template: d2s-sparql-operations
-          arguments:
-            parameters:
-            - name: sparql-queries-path
-              value: "https://github.com/MaastrichtU-IDS/d2s-transform-repository/tree/master/sparql/compute-hcls-stats"
-            - name: graph-uri
-              value: "{{workflow.parameters.graph-uri}}"
-      - - name: run-rdfunit
-          template: rdfunit
-          arguments:
-            parameters:
-            - name: rdfunit-schema
-              value: "{{workflow.parameters.rdfunit-schema}}"
-      - - name: run-fairsharing-metrics
-          template: fairsharing-metrics
-          arguments:
-            parameters:
-            - name: fairsharing-metrics-url
-              value: "{{workflow.parameters.fairsharing-metrics-url}}"
-      - - name: upload-rdfunit
-          template: rdf-upload
-          dependencies: [run-rdfunit]
-          arguments:
-            parameters:
-            - name: file-to-upload
-              value: "/data/results"
-            - name: graph-uri
-              value: "{{workflow.parameters.graph-uri}}"
-      - - name: upload-fairsharing-metrics
-          template: rdf-upload
-          dependencies: [run-fairsharing-metrics]
-          arguments:
-            parameters:
-            - name: file-to-upload
-              value: "/data/fairsharing.nt"
-            - name: graph-uri
-              value: "{{workflow.parameters.graph-uri}}"
+      - name: sparql-compute-hcls-stats
+        template: d2s-sparql-operations
+        arguments:
+          parameters:
+          - name: sparql-queries-path
+            value: "https://github.com/MaastrichtU-IDS/d2s-transform-repository/tree/master/sparql/compute-hcls-stats"
+          - name: graph-uri
+            value: "{{workflow.parameters.graph-uri}}"
+      - name: run-rdfunit
+        template: rdfunit
+        arguments:
+          parameters:
+          - name: rdfunit-schema
+            value: "{{workflow.parameters.rdfunit-schema}}"
+      - name: run-fairsharing-metrics
+        template: fairsharing-metrics
+        arguments:
+          parameters:
+          - name: fairsharing-metrics-url
+            value: "{{workflow.parameters.fairsharing-metrics-url}}"
+      - name: upload-rdfunit
+        template: rdf-upload
+        dependencies: [run-rdfunit]
+        arguments:
+          parameters:
+          - name: file-to-upload
+            value: "/data/results"
+          - name: graph-uri
+            value: "{{workflow.parameters.graph-uri}}"
+      - name: upload-fairsharing-metrics
+        template: rdf-upload
+        dependencies: [run-fairsharing-metrics]
+        arguments:
+          parameters:
+          - name: file-to-upload
+            value: "/data/fairsharing.nt"
+          - name: graph-uri
+            value: "{{workflow.parameters.graph-uri}}"
 
   - name: d2s-sparql-operations
     inputs:
