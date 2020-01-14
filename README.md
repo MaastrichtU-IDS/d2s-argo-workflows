@@ -37,26 +37,26 @@ oc login https://openshift_cluster:8443 --token=MY_TOKEN
 
 ### Run [examples](https://github.com/MaastrichtU-IDS/data2services-transform-biolink)
 
-As example we will use config files from [data2services-transform-biolink](https://github.com/MaastrichtU-IDS/data2services-transform-biolink)
+As example we will use config files from [d2s-transform-biolink](https://github.com/MaastrichtU-IDS/d2s-transform-biolink)
 
 ```shell
-git clone --recursive https://github.com/MaastrichtU-IDS/data2services-transform-biolink.git
-cd data2services-transform-biolink
+git clone --recursive https://github.com/MaastrichtU-IDS/d2s-transform-biolink.git
+cd d2s-transform-biolink
 ```
 
 Run `oc login` to connect to the [OpenShift cluster](https://app.dsri.unimaas.nl:8443/).
 
 ```shell
 # steps based workflow
-argo submit d2s-argo-workflows/d2s-workflow-transform-xml.yaml \
+argo submit d2s-argo-workflows/workflows/d2s-workflow-transform-xml.yaml \
   -f support/config/config-transform-xml-drugbank.yml
 
 # DAG workflow
-argo submit d2s-argo-workflows/d2s-workflow-transform-xml-dag.yaml \
+argo submit d2s-argo-workflows/workflows/d2s-workflow-transform-xml-dag.yaml \
   -f support/config/config-transform-xml-drugbank.yml
 
 # Test
-argo submit --watch d2s-sparql-workflow.yaml
+argo submit --watch d2s-argo-workflows/workflows/d2s-workflow-sparql.yaml
 ```
 
 ### Check running workflows
@@ -85,7 +85,7 @@ spec:
   volumes:
   - name: workdir
     persistentVolumeClaim:
-      claimName: data2services-storage
+      claimName: d2s-storage
   containers:
   - name: d2s-download
     image: umids/d2s-download:latest
