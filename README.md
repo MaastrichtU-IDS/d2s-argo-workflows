@@ -67,54 +67,6 @@ argo list
 
 ---
 
-## Debug Argo
-
-To get into the container. Create YAML with command `tail /dev/null` to keep it running.
-
-Example of test pod in [tests/test-devnull-pod.yaml](https://github.com/MaastrichtU-IDS/d2s-argo-workflows/blob/master/tests/test-devnull-pod.yaml).
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    purpose: test
-  name: test-devnull-pod
-spec:
-  volumes:
-  - name: workdir
-    hostPath:
-      path: /data/d2s-workspace
-      type: Directory
-    # persistentVolumeClaim:
-    #   claimName: d2s-storage
-  containers:
-  - name: test-devnull
-  	# Change the image to test here
-    image: umids/rdfunit:latest
-    command: [ "tail", "-f", "/dev/null"]
-    resources:
-      limits:
-        cpu: 1000m 
-        memory: 10Gi 
-    volumeMounts:
-    - name: workdir
-      mountPath: /data
-```
-
-Then start the pod:
-
-```shell
-oc create -f archives/d2s-sparql-operations-pod.yaml
-
-# Connect with Shell
-oc rsh d2s-sparql-operations
-```
-
-> You can also test a pod within a argo workflow, see [tests/test-devnull-argo.yaml](https://github.com/MaastrichtU-IDS/d2s-argo-workflows/blob/master/tests/test-devnull-argo.yaml).
-
----
-
 ## oc commands
 
 ### List pods
