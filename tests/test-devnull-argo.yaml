@@ -17,7 +17,7 @@ spec:
   arguments:
     parameters:
     - name: sparql-triplestore-url
-      value: http://graphdb.dumontierlab.com/repositories/test-dqa/statements
+      value: https://graphdb.dumontierlab.com/repositories/test-dqa/statements
     - name: sparql-triplestore-username
       value: import_user
     # - name: sparql-triplestore-password

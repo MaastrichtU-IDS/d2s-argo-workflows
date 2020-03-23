@@ -11,7 +11,7 @@ spec:
     image: umids/d2s-sparql-operations
     env:
     - name: triplestore_url
-      value: "http://graphdb.dumontierlab.com"
+      value: "https://graphdb.dumontierlab.com"
     - name: triplestore_repository
       value: "public"
     - name: sparql_username

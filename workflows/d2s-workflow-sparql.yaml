@@ -13,7 +13,7 @@ spec:
       - name: executeFile
     container:
       image: umids/d2s-sparql-operations
-      args: ["-ep", "http://graphdb.dumontierlab.com", "-rep", "{{inputs.parameters.repository}}", 
+      args: ["-ep", "https://graphdb.dumontierlab.com", "-rep", "{{inputs.parameters.repository}}", 
     "-op", "update", "-un", "import_user", "-pw", "test", "-f", "{{inputs.parameters.executeFile}}"]
 
   - name: execute-all-sparql

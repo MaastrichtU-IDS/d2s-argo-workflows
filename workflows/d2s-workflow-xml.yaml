@@ -21,7 +21,7 @@ spec:
     - name: sparql-tmp-graph-uri
       value: https://w3id.org/data2services/graph/xml2rdf
     - name: sparql-tmp-triplestore-url
-      value: http://graphdb.dumontierlab.com/repositories/test-vincent
+      value: https://graphdb.dumontierlab.com/repositories/test-vincent
       # value: http://node000002.cluster.ids.unimaas.nl/
     # - name: sparql-tmp-triplestore-repository
     #   value: test-vincent
@@ -30,7 +30,7 @@ spec:
     - name: sparql-tmp-triplestore-password
       value: null
     - name: sparql-final-triplestore-url
-      value: http://graphdb.dumontierlab.com/repositories/test-vincent
+      value: https://graphdb.dumontierlab.com/repositories/test-vincent
     - name: sparql-final-triplestore-username
       value: import_user
     - name: sparql-final-triplestore-password
@@ -152,7 +152,7 @@ spec:
       # "-if", "/data/output/{{inputs.parameters.dataset}}/rdf_output.nq", 
       # "-un", "{{workflow.parameters.sparql-tmp-triplestore-username}}", 
       # "-pw", "{{workflow.parameters.sparql-tmp-triplestore-password}}"]
-      args: ["-url", "http://graphdb.dumontierlab.com/repositories/test-vincent/statements",
+      args: ["-url", "https://graphdb.dumontierlab.com/repositories/test-vincent/statements",
       "-if", "/data/output/drugbank",
       "-un", "import_user", 
       "-pw", "test"]

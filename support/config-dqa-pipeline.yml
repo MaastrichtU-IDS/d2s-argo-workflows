@@ -3,7 +3,7 @@
 # triplestore-url: http://node000002.cluster.ids.unimaas.nl/
 # triplestore-repository: "test-dqa"
 
-# triplestore-url: http://graphdb.dumontierlab.com/repositories/test-dqa/statements
+# triplestore-url: https://graphdb.dumontierlab.com/repositories/test-dqa/statements
 # triplestore-url: http://node000002.cluster.ids.unimaas.nl/repositories/test-dqa/statements
 
 # Test RDFUnit

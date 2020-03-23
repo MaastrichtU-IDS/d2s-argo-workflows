@@ -6,7 +6,7 @@ tmpGraphUri: https://w3id.org/data2services/graph/xml2rdf/pubmed
 
 # RdfUpload params
 sparqlEndpoint: http://node000002.cluster.ids.unimaas.nl/
-#sparqlEndpoint: http://graphdb.dumontierlab.com/
+#sparqlEndpoint: https://graphdb.dumontierlab.com/
 sparqlRepository: test
 sparqlUsername: import_user
 sparqlPassword: test
