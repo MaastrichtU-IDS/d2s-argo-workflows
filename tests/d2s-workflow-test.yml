@@ -5,7 +5,7 @@ metadata:
 spec:
   entrypoint: execute-workflow
   # Run it:
-  # argo submit tests/d2s-workflow-test.yaml -f tests/config-argo-test.yml
+  # argo submit tests/d2s-workflow-test.yml -f tests/config-argo-test.yml
 
   volumes:
   - name: workdir
